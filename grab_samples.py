@@ -4,7 +4,7 @@ import pandas as pd
 import os
 import argparse
 from transformers import AutoTokenizer
-from pydev.env1.projects.miapipeline.models import MODEL_MAP, print_available_models
+from models import MODEL_MAP, available_models
 
 def pick_sample(DF, metric = 'cosine_similarity'):
     if metric not in DF.columns:

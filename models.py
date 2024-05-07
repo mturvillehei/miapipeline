@@ -23,7 +23,7 @@ TOKENIZERS= {
     'mamba-3b': lambda: AutoTokenizer.from_pretrained(MODEL_MAP['mamba-3b'])
 }
 
-def print_available_models():
+def available_models():
     print("Available models (arguments):")
     for model_name in MODEL_MAP:
         print(f"- {model_name}")
