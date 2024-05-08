@@ -22,3 +22,18 @@ For easy testing of string membership in LLMs.
 * `--prefix_tokens`: Token length of the generated prefixes.
 * `--prefix_loc`: Where the prefix is chosen from. Options are: 'tart', 'random', or an integer (e.g., '9'). If the start token is longer than sample_length - prefix_tokens, the last possible token will be chosen (i.e., sample_length - prefix_tokens).
 * `--size`: Number of samples to include in the prefix map. Default is "all".
+
+
+### Run Main.py 
+
+
+### Model options
+There are two primary types of supported models - local and API. Local models will attempt to run on your PC. API models require an API key and are executed on server, and *will cost money*.
+
+**Local models**
+* `gemma-2b`: 
+* `open_llama-3b`: 
+* `mamba-3b`: 
+
+**API models**:
+* `claude-API`:  
