@@ -1,5 +1,5 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorWithPadding, LlamaForCausalLM, LlamaTokenizer
-from claude_api import API_CALL
+from Models.claude_api import API_CALL
 import torch
 MODEL_MAP = {
     'gemma-2b': "google/gemma-2b",

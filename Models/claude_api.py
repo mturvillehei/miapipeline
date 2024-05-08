@@ -6,7 +6,7 @@ import json
 # Maybe we have like, prefix[0:-2 = sysprompt, prefix[-1] = payload?
 # Either way, it's not realistic to have the user write the sysprompt manually.
 
-def API_CALL(sysprompt, payload, *args, keypath = "claude_api_key.txt", idx = payload, json_response = False):
+def API_CALL(sysprompt, payload, *args, keypath = "claude_api_key.txt", idx = None, json_response = False):
 
     parent_folder = os.path.dirname(os.path.dirname(__name__))
 

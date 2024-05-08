@@ -1,4 +1,5 @@
 Data/
 Output/
 */__pycache__/
+__pycache__/
 Prefixes/

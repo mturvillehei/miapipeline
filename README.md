@@ -23,6 +23,9 @@ For easy testing of string membership in LLMs.
 * `--prefix_loc`: Where the prefix is chosen from. Options are: 'tart', 'random', or an integer (e.g., '9'). If the start token is longer than sample_length - prefix_tokens, the last possible token will be chosen (i.e., sample_length - prefix_tokens).
 * `--size`: Number of samples to include in the prefix map. Default is "all".
 
+```bash 
+$ python prefix_generation.py --model mamba-3b --dataset corpus  
+```
 
 ### Run Main.py 
 
