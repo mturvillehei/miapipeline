@@ -25,7 +25,8 @@ MODELS = {
 TOKENIZERS= {
     'gemma-2b': lambda: AutoTokenizer.from_pretrained(MODEL_MAP['gemma-2b']),
     'open_llama_3b': lambda: LlamaTokenizer.from_pretrained(MODEL_MAP['open_llama_3b']),
-    'mamba-3b': lambda: AutoTokenizer.from_pretrained(MODEL_MAP['mamba-3b'])
+    'mamba-3b': lambda: AutoTokenizer.from_pretrained(MODEL_MAP['mamba-3b']),
+    'claude-API': None
 }
 
 def available_models():

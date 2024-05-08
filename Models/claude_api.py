@@ -2,7 +2,11 @@ import anthropic
 import os
 import json
 
-def API_CALL(sysprompt, payload, *args, keypath = "claude_api_key.txt", idx = 0, json_response = False):
+# Either we store the sysprompt in a text file and load it, or we use the sysprompt as the prefix.
+# Maybe we have like, prefix[0:-2 = sysprompt, prefix[-1] = payload?
+# Either way, it's not realistic to have the user write the sysprompt manually.
+
+def API_CALL(sysprompt, payload, *args, keypath = "claude_api_key.txt", idx = payload, json_response = False):
 
     parent_folder = os.path.dirname(os.path.dirname(__name__))
 
@@ -43,11 +47,10 @@ def API_CALL(sysprompt, payload, *args, keypath = "claude_api_key.txt", idx = 0,
         print(f"Underlying exception: {e.__cause__}")
         
     except anthropic.RateLimitError as e:
-        print(f"A 429 status code was received for image {idx}.jpg; backing off")
-        
+        print(f"A 429 status code was received for prompt {idx}.jpg; backing off")
         
     except anthropic.APIStatusError as e:
-        print(f"A non-200 status code was received for image {idx}.jpg")
+        print(f"A non-200 status code was received for prompt {idx}.jpg")
         print(f"Status code: {e.status_code}")
         print(f"Response: {e.response}")
     
@@ -65,5 +68,4 @@ def API_CALL(sysprompt, payload, *args, keypath = "claude_api_key.txt", idx = 0,
     else:
         OUTPUT = message.content[0].text
 
-        
     return OUTPUT

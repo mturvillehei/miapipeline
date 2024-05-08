@@ -32,7 +32,7 @@ def load_Corpus(crop=False, save=True, size="all"):
             Corpus_shuffled.save_to_disk("./Data/Corpus_{size}")
     # Crop the dataset if requested
     
-    if crop and size is not "all":
+    if crop and size != "all":
         Corpus_shuffled = Corpus_shuffled.select(range(size))
 
     return Corpus_shuffled
