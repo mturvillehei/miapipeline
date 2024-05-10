@@ -1,6 +1,8 @@
 import argparse
 import random
 import torch
+import datetime
+import os
 from implemented_datasets import DATALOADERS, ACCESSDATA, available_datasets
 from Models.models import TOKENIZERS
 
@@ -93,7 +95,20 @@ def main():
     tokenizer, = TOKENIZERS[args.model]
     prefix_map, original_map = gen_prefix_map(dataset, tokenizer, args.prefix_length, args.prefix_location, args.size)
         
-    # ...
+   # Save the maps to their own directory.
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir = f"Prefixes/{args.model}_{args.dataset}_{args.prefix_length}_{args.prefix_location}_{timestamp}"
+    os.makedirs(output_dir, exist_ok=True)
+
+    prefix_file = f"{output_dir}/prefix_map.pt"
+    original_file = f"{output_dir}/original_map.pt"
+
+    torch.save(prefix_map, prefix_file)
+    torch.save(original_map, original_file)
+
+    print(f"Saved files to directory: {output_dir}")
+    print(f"Prefix map file: {prefix_file}")
+    print(f"Original map file: {original_file}")
 
 if __name__ == "__main__":
     main()
