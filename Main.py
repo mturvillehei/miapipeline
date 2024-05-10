@@ -11,6 +11,6 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
 
-
+    
 # Would be interesting if we ran this with a visualizer for data as it's being generated
 # i.e. after the sample is generated we can look at the cosine similarity in the cli dump

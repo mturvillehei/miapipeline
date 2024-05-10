@@ -15,7 +15,6 @@ def API_CALL(sysprompt, payload, *args, keypath = "claude_api_key.txt", idx = No
     except FileNotFoundError:
         print("The file 'claude_api_key.txt' was not found in the expected location.")
         print("Please check the file path and ensure the file exists.")
-    
 
     client = anthropic.Anthropic(
         api_key=claude_key,

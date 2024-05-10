@@ -1,15 +1,13 @@
 from dataloaders.corpus import load_Corpus
 
-
-
 DATALOADERS= {
     'corpus': lambda size, save, crop: load_Corpus(size, save, crop), 
     'common_Crawl': lambda size, save, crop: print(f"Not implemented")
 }
 
-# Modular return to allow for different dataset types.
+# Expected datatype is a Dict with the keys "text", "label", "info" (optional)
 ACCESSDATA = {
-    'corpus': lambda dataset: (dataset['text'], dataset['title'], dataset['url']),
+    'corpus': lambda dataset: {'text' : dataset['text'], 'label': dataset['title'], 'info': dataset['url']},
     'common_crawl': lambda dataset: ("Not implemented", "Not Implemented", "Not Implemented")
 }
 

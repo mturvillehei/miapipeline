@@ -1,8 +1,6 @@
 from datasets import load_dataset
 import os
 
-### 
-
 def load_Corpus():
     if os.path.exists("./Data/Corpus5"):
         return

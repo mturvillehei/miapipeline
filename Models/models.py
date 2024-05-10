@@ -8,7 +8,6 @@ MODEL_MAP = {
     'claude_api': 'API_CALL'
 }
 
-# Since we're using lambda functions, we can modify this to accept arbitrary args depending on the model type. 
 MODELS = {
     'gemma-2b': lambda: AutoModelForCausalLM.from_pretrained(
         MODEL_MAP['gemma-2b'], device_map="auto") if torch.cuda.is_available()
