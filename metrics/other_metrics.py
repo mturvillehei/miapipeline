@@ -1,6 +1,42 @@
 from typing import Any
 import numpy as np
+import math
 
+class KullbackLeibler:
+    def __init__(self):
+        self.dataset_freq = {}
+        self.dataset_length = 0
+
+    def update_dataset(self, data):
+        for char in data:
+            self.dataset_freq[char] = self.dataset_freq.get(char, 0) + 1
+            self.dataset_length += 1
+
+    def calculate_divergence(self, string):
+        # Count the frequency of each character in the string
+        string_freq = {}
+        for char in string:
+            string_freq[char] = string_freq.get(char, 0) + 1
+
+        # Normalize the frequencies to get the probability distribution
+        string_prob = {}
+        string_length = len(string)
+        for char, freq in string_freq.items():
+            string_prob[char] = freq / string_length
+
+        # Normalize the frequencies of the dataset to get the probability distribution
+        dataset_prob = {}
+        for char, freq in self.dataset_freq.items():
+            dataset_prob[char] = freq / self.dataset_length
+
+        # Calculate the Kullback-Leibler divergence
+        kl_divergence = 0
+        for char in string_prob:
+            if char in dataset_prob:
+                kl_divergence += string_prob[char] * math.log(string_prob[char] / dataset_prob[char])
+
+        return kl_divergence
+    
 class GT_Estimator():
     """
     A class for implementing the Good-Turing frequency estimation algorithm.
@@ -61,9 +97,4 @@ def modified_hamming_distance(A, B):
     else:
         return [sum(el1 != el2 for el1, el2 in zip(A, B))] / len(A)
 
-
-def kullback_leibler(A, B): 
-    # Implement over the entire dataset, then compute kullback-liebler of the A and B to see if they match?
-    # https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence
-    return
 
