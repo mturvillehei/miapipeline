@@ -18,7 +18,7 @@ def gen_prefix_map(dataset, tokenizer, prefix_length, prefix_location, size):
     Parameters:
         dataset: Dict, keys are "text", "label", "info" (optional)
         tokenizer (Tokenizer or None): Tokenizer for the model being used. If we're using an API model, the prefix, suffix, and original are not tokenized. 
-        prefix_length (int): The number of tokens in the prefix. Default is 10.
+        prefix_length (int): The number of tokens in the prefix.
         prefix_location (str): Location to start prefix extraction. See documentation for available options.
         size (int): Number of samples to generate prefixes for.
         
