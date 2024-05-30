@@ -59,21 +59,23 @@ The `model_prompting.py` script is responsible for generating strings using a gi
 
 - `--prefix_map`: The name of the prefix map to use (e.g., 'my_prefix_map'). This should correspond to a folder in the `Prefixes` directory.
 - `--model`: The model to use for generating strings (e.g., 'mamba-3b').
+- `--num_strings`: The total number of strings to generate. If the number of strings is larger than the dataset size, prefixes will be used repeatedly.
 - `--batch_size`: The number of strings to generate in each batch (default is 10).
-- `--num_strings`: The total number of strings to generate.
+- `--max_length`: The maximum output length from the model (default is 20). The actual output length may not reach this length.
 
 The script performs the following steps:
 
 1. It parses the command-line arguments using `argparse`.
 2. It loads the prefix map and original map from the specified `prefix_map` directory.
 3. It initializes the specified model based on the `model` argument.
-4. It prepares the dataset by selecting a subset of the original map based on the `num_strings` argument.
-5. It processes the dataset in batches using the `batch_prompt` function:
+4. It processes the dataset in batches using the `batch_prompt` function:
+   - If `num_strings` is less than or equal to the dataset size, it generates outputs for the requested number of strings.
+   - If `num_strings` is greater than the dataset size, it implements wraparound to continue generating outputs from the beginning of the dataset until the desired number of strings is reached.
    - For each batch, it calls the appropriate `process_batch` function based on the model type (API or local).
    - The `process_batch` function passes the batch to the corresponding `process_api_batch` or `process_local_batch` function.
    - The `process_api_batch` function sends each entry's text to the API model and returns the generated output.
    - The `process_local_batch` function pads the input tokens, passes them to the local model, and returns the generated output.
-6. The generated output for each batch is collected and returned as the final output.
+5. The generated output for each batch is collected and returned as the final output.
 
 The script supports two types of models:
 
@@ -85,11 +87,12 @@ The `MODELS` and `MODEL_TYPES` dictionaries are used to map the model names to t
 To run the script, use the following command:
 
 ```bash
-$ python model_prompting.py --prefix_map my_prefix_map --model mamba-3b --num_strings 100
+$ python model_prompting.py --prefix_map my_prefix_map --model mamba-3b --num_strings 100 --max_length 50
 ```
 
-This will generate 100 strings using the 'mamba-3b' model and the prefix map stored in the 'my_prefix_map' directory.
+This will generate 100 strings using the 'mamba-3b' model and the prefix map stored in the 'my_prefix_map' directory. The maximum output length from the model will be set to 50 tokens.
+
+If the number of requested strings (`num_strings`) is greater than the dataset size, the script will implement wraparound and continue generating outputs from the beginning of the dataset until the desired number of strings is reached.
 
 The generated output will be returned as a list of dictionaries, where each dictionary contains the generated tokens for a single input.
 
-Note: Make sure to have the required dependencies installed and the necessary model files and API keys set up before running the script.
