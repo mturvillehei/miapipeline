@@ -97,4 +97,6 @@ def modified_hamming_distance(A, B):
     else:
         return [sum(el1 != el2 for el1, el2 in zip(A, B))] / len(A)
 
-
+# Perplexity is in other_metrics.py because the model/tokenizer is required as an arg
+def perplexity():
+    return

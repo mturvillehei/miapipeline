@@ -1,43 +1,40 @@
-import nltk
-from nltk.tokenize import word_tokenize
-from nltk.tokenize.treebank import TreebankWordTokenizer
+from Models.models import MODELS, MODEL_TYPES
+from typing import Callable
+from torch.nn.utils.rnn import pad_sequence
 
-def batch_tokenize(text_list, title_list, url_list, batch_size=1000):
-    """ Tokenize the text in batches.
+def process_batch(batch, model_fn, max_length, model_type):
+    if model_type == "api":
+        # For API models
+        output = [model_fn(entry['text'], max_length) for entry in batch]
+    else:
+        # For other models
+        input_ids = [entry['tokens'] for entry in batch]
+        input_ids = pad_sequence(input_ids, batch_first=True, padding_value=0)
+        if isinstance(model_fn, Callable):
+            model = model_fn()
+            output = model.generate(input_ids=input_ids, max_length=max_length)
+        else:
+            raise ValueError("Invalid model function")
+    return output
 
-    Args:
-        text_list (list): List of text strings.
-        title_list (list): List of title strings.
-        url_list (list): List of url strings.
-        batch_size (int, optional): Batch size for tokenization. Defaults to 1000.
-
+def batch_prompt(dataset, model, batch_size, max_length):
+    '''
+    Parameters:
+    dataset: Each row is a dict containing the prefix text and the prefix tokens: 'text' 'tokens'
+    model: key of the model to use
+    batch_size: batch size for model prompting
+    max_length: max number of tokens to generate
+    
     Returns:
-        tuple: Tuple of tokenized text, title, and url lists.
-    """
-    tokenizer = TreebankWordTokenizer()
-    tokenized_text = []
-    tokenized_title = []
-    tokenized_url = []
-
-    for i in range(0, len(text_list), batch_size):
-        batch_text = text_list[i:i + batch_size]
-        batch_title = title_list[i:i + batch_size]
-        batch_url = url_list[i:i + batch_size]
-
-        tokenized_batch_text = [tokenizer.tokenize(text) for text in batch_text]
-        tokenized_batch_title = [tokenizer.tokenize(title) for title in batch_title]
-        tokenized_batch_url = [tokenizer.tokenize(url) for url in batch_url]
-
-        tokenized_text.extend(tokenized_batch_text)
-        tokenized_title.extend(tokenized_batch_title)
-        tokenized_url.extend(tokenized_batch_url)
-
-    return tokenized_text, tokenized_title, tokenized_url
-
-# Example usage:
-text_list = ["Example text 1", "Example text 2", "Example text 3"]
-title_list = ["Example title 1", "Example title 2", "Example title 3"]
-url_list = ["http://example.com/1", "http://example.com/2", "http://example.com/3"]
-
-dataset = (text_list, title_list, url_list)
-tokenized_dataset = batch_tokenize(*dataset)
+    output: Each row is a dict containing the output tokens of the model.
+    '''
+    model_fn = MODELS[model]
+    model_type = MODEL_TYPES[model]  # Get the model type
+    output = []
+    
+    for i in range(0, len(dataset), batch_size):
+        batch = dataset[i:i+batch_size]
+        batch_output = process_batch(batch, model_fn, max_length, model_type)
+        output.extend(batch_output)
+    
+    return output

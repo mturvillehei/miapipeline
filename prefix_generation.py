@@ -95,11 +95,11 @@ def main():
     tokenizer, = TOKENIZERS[args.model]
     prefix_map, original_map = gen_prefix_map(dataset, tokenizer, args.prefix_length, args.prefix_location, args.size)
         
-   # Save the maps to their own directory.
+    # Save the maps to their own directory.
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir = f"Prefixes/{args.model}_{args.dataset}_{args.prefix_length}_{args.prefix_location}_{timestamp}"
     os.makedirs(output_dir, exist_ok=True)
-
+    
     prefix_file = f"{output_dir}/prefix_map.pt"
     original_file = f"{output_dir}/original_map.pt"
 

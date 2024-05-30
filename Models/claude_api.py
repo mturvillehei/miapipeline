@@ -2,20 +2,34 @@ import anthropic
 import os
 import json
 
-# Either we store the sysprompt in a text file and load it, or we use the sysprompt as the prefix.
-# Maybe we have like, prefix[0:-2 = sysprompt, prefix[-1] = payload?
-# Either way, it's not realistic to have the user write the sysprompt manually.
+def OPUS_API_CALL(payload, *args, syspromptpath = "claude_opus_sysprompt.txt", keypath = "claude_api_key.txt", idx = None, json_response = False):
+        
+    ''' 
 
-def API_CALL(sysprompt, payload, *args, keypath = "claude_api_key.txt", idx = None, json_response = False):
+    Parameters:
+        payload: the text to prompt
+        *args: nothing yet
+        syspromptpath: location of the sysprompt to use
 
+    Returns:
+
+        output: Each row is a dict containing the output tokens of the model.
+
+    ''' 
     parent_folder = os.path.dirname(os.path.dirname(__name__))
-
+    print(f"Searching for the API key and sysprompt in {parent_folder}")
     try:
         claude_key = open(parent_folder + keypath, "r").read()
     except FileNotFoundError:
-        print("The file 'claude_api_key.txt' was not found in the expected location.")
+        print(f"The file {keypath} was not found in the expected location.")
         print("Please check the file path and ensure the file exists.")
 
+    try:
+        sysprompt = open(parent_folder + syspromptpath, "r").read()
+    except FileNotFoundError:
+        print(f"The file {syspromptpath} was not found in the expected location.")
+        print("Please check the file path and ensure the file exists.")
+    
     client = anthropic.Anthropic(
         api_key=claude_key,
         max_retries=2,  
@@ -54,7 +68,6 @@ def API_CALL(sysprompt, payload, *args, keypath = "claude_api_key.txt", idx = No
         print(f"Response: {e.response}")
     
     # Response can be formatted as a JSON output. This can be set in the sysprompt.
-    # However, if we're trying MIA extraction, it might be useful to only pass training data into the sysprompt
     if json_response:
         try:
             OUTPUT = json.loads(message.content[0].text)
