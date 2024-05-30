@@ -1,5 +1,5 @@
 # miapipeline
-For easy testing of string membership in LLMs.
+For easy testing of string membership and memorization in LLMs.
 
 # Pipeline structure.
 
@@ -53,5 +53,43 @@ For example, a directory name might look like:
 `mamba-3b_Corpus_10_start_20230510_143015`
 Within this directory, the prefix map is stored as `prefix_map.pt` and the original map is stored as `original_map.pt`.
 
-## Model prompting 
+## Model Prompting
 
+The `model_prompting.py` script is responsible for generating strings using a given model and prefix map. It takes the following arguments:
+
+- `--prefix_map`: The name of the prefix map to use (e.g., 'my_prefix_map'). This should correspond to a folder in the `Prefixes` directory.
+- `--model`: The model to use for generating strings (e.g., 'mamba-3b').
+- `--batch_size`: The number of strings to generate in each batch (default is 10).
+- `--num_strings`: The total number of strings to generate.
+
+The script performs the following steps:
+
+1. It parses the command-line arguments using `argparse`.
+2. It loads the prefix map and original map from the specified `prefix_map` directory.
+3. It initializes the specified model based on the `model` argument.
+4. It prepares the dataset by selecting a subset of the original map based on the `num_strings` argument.
+5. It processes the dataset in batches using the `batch_prompt` function:
+   - For each batch, it calls the appropriate `process_batch` function based on the model type (API or local).
+   - The `process_batch` function passes the batch to the corresponding `process_api_batch` or `process_local_batch` function.
+   - The `process_api_batch` function sends each entry's text to the API model and returns the generated output.
+   - The `process_local_batch` function pads the input tokens, passes them to the local model, and returns the generated output.
+6. The generated output for each batch is collected and returned as the final output.
+
+The script supports two types of models:
+
+- API models: These models require an API key and are executed on a server. The generated output is obtained by sending the input text to the API.
+- Local models: These models run locally on your machine. The input tokens are padded and passed to the local model for generation.
+
+The `MODELS` and `MODEL_TYPES` dictionaries are used to map the model names to their corresponding functions and types.
+
+To run the script, use the following command:
+
+```bash
+$ python model_prompting.py --prefix_map my_prefix_map --model mamba-3b --num_strings 100
+```
+
+This will generate 100 strings using the 'mamba-3b' model and the prefix map stored in the 'my_prefix_map' directory.
+
+The generated output will be returned as a list of dictionaries, where each dictionary contains the generated tokens for a single input.
+
+Note: Make sure to have the required dependencies installed and the necessary model files and API keys set up before running the script.
