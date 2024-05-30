@@ -3,7 +3,7 @@ For easy testing of string membership in LLMs.
 
 # Pipeline structure.
 
-## Prefix Generatoin
+## Prefix Generation
 
 First, a prefix map is required as input to the model. Generating a prefix map is described below.
 
