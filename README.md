@@ -59,7 +59,7 @@ Within this directory, the prefix map is stored as `prefix_map.pt` and the origi
 
 The `model_prompting.py` script is responsible for generating strings using a given model and prefix map. It takes the following arguments:
 
-- `--prefix_map`: The name of the prefix map to use (e.g., 'my_prefix_map'). This should correspond to a folder in the `Prefixes` directory.
+- `--prefix_map`: The name of the prefix map to use (e.g., 'prefix_map_dir'). This should correspond to a folder in the `Prefixes` directory.
 - `--model`: The model to use for generating strings (e.g., 'mamba-3b').
 - `--num_strings`: The total number of strings to generate. If the number of strings is larger than the dataset size, prefixes will be used repeatedly.
 - `--batch_size`: The number of strings to generate in each batch (default is 10).
@@ -84,15 +84,15 @@ The script supports two types of models:
 - API models: These models require an API key and are executed on a server. The generated output is obtained by sending the input text to the API.
 - Local models: These models run locally on your machine. The input tokens are padded and passed to the local model for generation.
 
-The `MODELS` and `MODEL_TYPES` dictionaries are used to map the model names to their corresponding functions and types.
+The `load_model` function and `MODEL_TYPES` dictionaries are used to map the model names to their corresponding functions and types.
 
 To run the script, use the following command:
 
 ```bash
-$ python model_prompting.py --prefix_map my_prefix_map --model mamba-3b --num_strings 100 --max_length 50
+$ python prompt.py --prefix_map prefix_map_dir --model mamba-3b --num_strings 100 --max_length 50
 ```
 
-This will generate 100 strings using the 'mamba-3b' model and the prefix map stored in the 'my_prefix_map' directory. The maximum output length from the model will be set to 50 tokens.
+This will generate 100 strings using the 'mamba-3b' model and the prefix map stored in the 'prefix_map_dir' directory. The maximum output length from the model will be set to 50 tokens.
 
 If the number of requested strings (`num_strings`) is greater than the dataset size, the script will implement wraparound and continue generating outputs from the beginning of the dataset until the desired number of strings is reached.
 
