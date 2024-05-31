@@ -23,6 +23,8 @@ First, a prefix map is required as input to the model. Generating a prefix map i
 * `--prefix_tokens`: Token length of the generated prefixes.
 * `--prefix_loc`: Where the prefix is chosen from. Options are: 'tart', 'random', or an integer (e.g., '9'). If the start token is longer than sample_length - prefix_tokens, the last possible token will be chosen (i.e., sample_length - prefix_tokens).
 * `--size`: Number of samples to include in the prefix map. Default is "all".
+* `--save`: Whether to save the dataset. Defaults to True.
+* `--crop`: If the dataset is saved, whether the dataset should be limited to size. If this is False, then size is used in prefix map generation, but the whole dataset is saved (rather than just a subset).
 
 ```bash 
 $ python prefix_generation.py --model mamba-3b --dataset corpus  
