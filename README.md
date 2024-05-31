@@ -89,7 +89,7 @@ The `load_model` function and `MODEL_TYPES` dictionaries are used to map the mod
 To run the script, use the following command:
 
 ```bash
-$ python prompt.py --prefix_map prefix_map_dir --model mamba-3b --num_strings 100 --max_length 50
+$ python prompt.py --prefix_map <prefix_map directory> --model mamba-3b --num_strings 100 --max_length 50
 ```
 
 This will generate 100 strings using the 'mamba-3b' model and the prefix map stored in the 'prefix_map_dir' directory. The maximum output length from the model will be set to 50 tokens.
