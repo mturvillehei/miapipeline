@@ -1,4 +1,4 @@
-from Models.models import MODEL_MAP, MODELS, TOKENIZERS
+from pydev.miapipeline.miapipeline.Models.load_models import MODEL_MAP, MODELS, TOKENIZERS
 import argparse
 
 if __name__ == "__main__":

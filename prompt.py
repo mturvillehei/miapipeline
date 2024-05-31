@@ -1,4 +1,4 @@
-from Models.models import load_model, MODEL_TYPES
+from Models.load_models import load_model, MODEL_TYPES
 from typing import Callable
 from torch.nn.utils.rnn import pad_sequence
 import argparse

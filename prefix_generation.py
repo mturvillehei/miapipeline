@@ -4,7 +4,8 @@ import torch
 from datetime import datetime
 import os
 from implemented_datasets import DATALOADERS, ACCESSDATA, available_datasets
-from Models.models import load_tokenizer
+from Models.load_models import load_tokenizer
+
 
 def load_dataset(dataset, size, save, crop):
     try:
