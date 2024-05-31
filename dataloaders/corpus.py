@@ -20,6 +20,7 @@ def load_Corpus(size="all", save=True, crop=False):
     """
     if crop and size != "all":
         dataset_name = f"Corpus_{size}"
+        size = int(size)
     else:
         dataset_name = "Corpus_all"
         size = "all"

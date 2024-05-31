@@ -1,10 +1,10 @@
 import argparse
 import random
 import torch
-import datetime
+from datetime import datetime
 import os
 from implemented_datasets import DATALOADERS, ACCESSDATA, available_datasets
-from Models.models import TOKENIZERS
+from Models.models import load_tokenizer
 
 def load_dataset(dataset, size, save, crop):
     try:
@@ -13,13 +13,13 @@ def load_dataset(dataset, size, save, crop):
         available_datasets(dataset)
         exit()
 
-def gen_prefix_map(dataset, tokenizer, prefix_length, prefix_location, size):
+def gen_prefix_map(dataset, model, prefix_length, prefix_location, size, **kwargs):
     
     ''' 
 
     Parameters:
         dataset: Dict, keys are "text", "label", "info" (optional)
-        tokenizer (Tokenizer or None): Tokenizer for the model being used. If we're using an API model, the prefix, suffix, and original are not tokenized. 
+        model: model for loading the tokenizer.
         prefix_length (int): The number of tokens in the prefix.
         prefix_location (str): Location to start prefix extraction. See documentation for available options.
         size (int): Number of samples to generate prefixes for.
@@ -47,16 +47,19 @@ def gen_prefix_map(dataset, tokenizer, prefix_length, prefix_location, size):
 
     prefix_map = []
     original_map = []
-
-    tokenizer.pad_token = tokenizer.eos_token
     
+    # Loading the tokenizer's encoding/decoding function for the given model
+    tokenizer, encode_func, decode_func = load_tokenizer(model)
+
     for idx, (text, label, info) in enumerate(combined_data):
-        print(f"Text: {text}")
-        print(f"label: {label}")
-        print(f"info: {info}")
-        print("---")
-        text_ids = tokenizer.tokenize(text)
-        
+        if idx % 500 == 0:
+
+            print(f"Text: {text}")
+            print(f"label: {label}")
+            print(f"info: {info}")
+            print("---")
+
+        text_ids = encode_func(text)
         if prefix_location == "start":
             start_index = 0
         elif prefix_location == "random":
@@ -65,7 +68,7 @@ def gen_prefix_map(dataset, tokenizer, prefix_length, prefix_location, size):
             start_index = min(prefix_location, len(text_ids) - prefix_length)
         
         prefix_ids = text_ids[start_index:start_index + prefix_length]
-        prefix_text = tokenizer.decode
+        prefix_text = decode_func(prefix_ids)
 
         prefix_map.append({'text': prefix_text, 'tokens': prefix_ids})
         original_map.append({'text': text, 'label': label, 'info': info }) # Could also save the tokenized original here. 
@@ -92,12 +95,11 @@ def main():
     dataset = ACCESSDATA[args.dataset](full_dataset)
     
     # Prefix map gen here
-    tokenizer, = TOKENIZERS[args.model]
-    prefix_map, original_map = gen_prefix_map(dataset, tokenizer, args.prefix_length, args.prefix_location, args.size)
+    prefix_map, original_map = gen_prefix_map(dataset, args.model, args.prefix_length, args.prefix_location, args.size)
         
     # Save the maps to their own directory.
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_dir = f"Prefixes/{args.model}_{args.dataset}_{args.prefix_length}_{args.prefix_location}_{timestamp}"
+    output_dir = f"Prefixes/{args.model}_{args.dataset}_{args.size}_{args.prefix_length}_{args.prefix_location}_{timestamp}"
     os.makedirs(output_dir, exist_ok=True)
     
     prefix_file = f"{output_dir}/prefix_map.pt"
@@ -107,8 +109,8 @@ def main():
     torch.save(original_map, original_file)
 
     print(f"Saved files to directory: {output_dir}")
-    print(f"Prefix map file: {prefix_file}")
-    print(f"Original map file: {original_file}")
+    #print(f"Prefix map file: {prefix_file}")
+    #print(f"Original map file: {original_file}")
 
 if __name__ == "__main__":
     main()
