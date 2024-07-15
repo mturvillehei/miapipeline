@@ -7,14 +7,9 @@ For easy testing of string membership and memorization in LLMs.
 
 First, a prefix map is required as input to the model. Generating a prefix map is described below.
 
-1. prefix_generation.py uses the DATALOADER for the dataset args.dataset
-    1. Runs the DATALOADER for the dataset chosen (args.dataset) 
-    2. If the dataset is not on disk, the dataset is downloaded by the dataloader
-    3. The dataloader then returns the dataset with sample count = size. If size is not specified, the entire dataset is returned. Results are shuffled automatically.
-2. The prefix_generation script then generates a tokenized prefix map for length "prefix_tokens". 
-    1. The prefix start location by default is the start token index 0. 
-    2. Other possible choices are "random" and integer positions. If the integer position exceeds the final position - prefix length, the last possible location is chosen.
-3. Prefix map is then stored in "".\Prefixes 
+1. prefix_generation.py uses the DATALOADER for the specified dataset (args.dataset)
+2. The script generates a tokenized prefix map for the given prefix length
+3. Prefix map is stored in ".\Prefixes"
 
 #### prefix_generation.py args:
 **args**
@@ -41,19 +36,12 @@ There are two primary types of supported models - local and API. Local models wi
 **API models**:
 * `claude-API`:
 
-Map location name format
-The prefix map and original map are stored in a new directory within the "Prefixes" directory for each execution of prefix_generation.py. The directory name is formatted as follows:
-`{model}_{dataset}_{prefix_tokens}_{prefix_loc}_{timestamp}`
-
-model: The model used for tokenizing (e.g., mamba-3b).
-dataset: The name of the dataset used (e.g., Corpus).
-prefix_tokens: The token length of the generated prefixes.
-prefix_loc: Where the prefix is chosen from ('start', 'random', or an integer position).
-timestamp: The timestamp of when the script was run, in the format YYYYMMDD_HHMMSS.
-
-For example, a directory name might look like:
-`mamba-3b_Corpus_10_start_20230510_143015`
-Within this directory, the prefix map is stored as `prefix_map.pt` and the original map is stored as `original_map.pt`.
+### Map location name format
+Prefix maps are stored in the "Prefixes" directory with the following naming convention:
+```
+{model}_{dataset}_{prefix_tokens}_{prefix_loc}_{timestamp}
+```
+Example: mamba-3b_Corpus_10_start_20230510_143015
 
 ## Model Prompting
 
@@ -66,27 +54,7 @@ The `model_prompting.py` script is responsible for generating strings using a gi
 - `--max_length`: The maximum output length from the model (default is 20). The actual output length may not reach this length.
 
 The script performs the following steps:
-
-1. It parses the command-line arguments using `argparse`.
-2. It loads the prefix map and original map from the specified `prefix_map` directory.
-3. It initializes the specified model based on the `model` argument.
-4. It processes the dataset in batches using the `batch_prompt` function:
-   - If `num_strings` is less than or equal to the dataset size, it generates outputs for the requested number of strings.
-   - If `num_strings` is greater than the dataset size, it implements wraparound to continue generating outputs from the beginning of the dataset until the desired number of strings is reached.
-   - For each batch, it calls the appropriate `process_batch` function based on the model type (API or local).
-   - The `process_batch` function passes the batch to the corresponding `process_api_batch` or `process_local_batch` function.
-   - The `process_api_batch` function sends each entry's text to the API model and returns the generated output.
-   - The `process_local_batch` function pads the input tokens, passes them to the local model, and returns the generated output.
-5. The generated output for each batch is collected and returned as the final output.
-
-The script supports two types of models:
-
-- API models: These models require an API key and are executed on a server. The generated output is obtained by sending the input text to the API.
-- Local models: These models run locally on your machine. The input tokens are padded and passed to the local model for generation.
-
-The `load_model` function and `MODEL_TYPES` dictionaries are used to map the model names to their corresponding functions and types.
-
-To run the script, use the following command:
+The script loads the prefix map, initializes the model, and generates strings in batches. It supports both API and local models.
 
 ```bash
 $ python prompt.py --prefix_map <prefix_map directory> --model mamba-3b --num_strings 100 --max_length 50

@@ -52,8 +52,10 @@ def gen_prefix_map(dataset, model, prefix_length, prefix_location, size, **kwarg
     # Loading the tokenizer's encoding/decoding function for the given model
     tokenizer, encode_func, decode_func = load_tokenizer(model)
 
+    print(f"Tokenizer for {model} loaded, generating prefixes.")
+
     for idx, (text, label, info) in enumerate(combined_data):
-        if idx % 500 == 0:
+        if idx % 50 == 0:
 
             print(f"Text: {text}")
             print(f"label: {label}")
