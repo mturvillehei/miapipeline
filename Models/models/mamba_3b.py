@@ -1,4 +1,5 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
 
 def load_model(**kwargs):
     return AutoModelForCausalLM.from_pretrained("CobraMamba/mamba-gpt-3b-v3", trust_remote_code=True, torch_dtype=torch.float16, **kwargs)

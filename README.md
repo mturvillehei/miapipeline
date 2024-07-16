@@ -66,3 +66,7 @@ If the number of requested strings (`num_strings`) is greater than the dataset s
 
 The generated output will be returned as a list of dictionaries, where each dictionary contains the generated tokens for a single input.
 
+## References
+
+ - Scalable Extraction of Training Data from (Production) Language Models https://arxiv.org/abs/2311.17035
+ - William A. Gale & Geoffrey Sampson (1995) Good‐turing frequency estimation without tears , Journal of Quantitative Linguistics, 2:3, 217-237, DOI: 10.1080/09296179508590051
